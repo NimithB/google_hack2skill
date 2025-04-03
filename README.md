@@ -62,4 +62,4 @@ DOT is an **AI-powered, cost-effective, and interactive Braille learning device*
 ---
 
 ## 📞 Contact & Support  
-📧 **Email**: [
+📧 **Email**: [nimithbe@gmail.com](mailto:nimithbe@gmail.com), [brindha715n@gmail.com](mailto:brindha715n@gmail.com)  
