@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            outline: none;
+        }
+
+        .button:focus {
+            outline: 2px solid #FFD700;
+            background-color: #0056b3;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        body.disable-mouse * {
+            pointer-events: none;
+        }
+    </style>
+    <script>
+        function speakText(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(utterance);
+
+            utterance.onerror = (event) => {
+                console.error('Speech synthesis error:', event.error);
+            };
+        }
+
+        document.addEventListener('keydown', function (event) {
+            const buttons = document.querySelectorAll('.button');
+            const focusedIndex = Array.from(buttons).indexOf(document.activeElement);
+
+            if (event.key === 'f') {
+                const prevIndex = (focusedIndex - 1 + buttons.length) % buttons.length;
+                buttons[prevIndex].focus();
+                speakText(`${buttons[prevIndex].textContent}`);
+            } else if (event.key === 'j') {
+                const nextIndex = (focusedIndex + 1) % buttons.length;
+                buttons[nextIndex].focus();
+                speakText(`${buttons[nextIndex].textContent}`);
+            } else if (event.key === " ") {
+                if (focusedIndex !== -1) {
+                    const selectedButton = buttons[focusedIndex];
+                    speakText(`Navigating to ${selectedButton.textContent}`);
+                    setTimeout(() => {
+                        window.location.href = selectedButton.getAttribute('onclick').split('=')[1].trim().replace(/'/g, '');
+                    }, 500);
+                }
+            }
+        });
+
+        window.onload = function () {
+            const buttons = document.querySelectorAll('.button');
+            buttons[0].focus();
+            speakText(buttons[0].textContent);
+
+            buttons.forEach(button => {
+                button.addEventListener('mouseover', () => {
+                    speakText(button.textContent);
+                });
+            });
+        };
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                window.location.href = '/'; // This should match your Flask route for the homepage.
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Choose a Language</h1>
+    <button class="button" onclick="window.location.href = 'kannada'">Kannada</button>
+    <button class="button" onclick="window.location.href = 'english'">English</button>
+    <button class="button" onclick="window.location.href = 'telugu'">Telugu</button>
+</body>
+</html>

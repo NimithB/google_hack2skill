@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Today's News</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f1f1f1;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2em;
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+form {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.news-section {
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+h2 {
+  margin: 10px 0;
+}
+
+#news {
+  margin: 10px 0;
+  padding: 10px;
+}
+  </style>
+  <script>
+    let voices = []; // To store the available voices
+
+    // Function to populate available voices
+    function populateVoices() {
+      voices = window.speechSynthesis.getVoices();
+    }
+
+    // Function to process the text for pauses at asterisks and read aloud
+    function readNews(news) {
+      if ('speechSynthesis' in window) {
+        // Ensure voices are loaded
+        populateVoices();
+
+        // Select a specific voice (you can customize this)
+        const selectedVoice = voices.find(voice => voice.name.includes("Google Indian English")) || voices[0];
+
+        // Split the news text by asterisks for pauses
+        const parts = news.split('*');
+        let utteranceQueue = [];
+
+        parts.forEach((part, index) => {
+          const utterance = new SpeechSynthesisUtterance(part.trim());
+          utterance.rate = 0.9; // Reduce the speed of the voice
+          utterance.voice = selectedVoice;// Set the selected voice
+          utterance.lang = "en-IN";
+          utteranceQueue.push(utterance);
+
+          // Add a pause after each part except the last
+          if (index < parts.length - 1) {
+            utteranceQueue.push(null); // null represents a pause
+          }
+        });
+
+        // Function to play the utterance queue
+        function playQueue(queue) {
+          if (queue.length === 0) return;
+
+          const next = queue.shift();
+
+          if (next) {
+            next.onend = () => setTimeout(() => playQueue(queue), 1); // Reduced pause to 0.5 seconds
+            window.speechSynthesis.speak(next);
+          } else {
+            // Pause handling (0.5-second gap)
+            setTimeout(() => playQueue(queue), 1);
+          }
+        }
+
+        // Start playing the utterance queue
+        playQueue(utteranceQueue);
+      } else {
+        alert("Your browser does not support text-to-speech!");
+      }
+    }
+
+    // Listen for Spacebar press to trigger form submission
+    document.addEventListener('keydown', function(event) {
+      if (event.keyCode === 32) { // Check for spacebar key code
+        const form = document.getElementById("generateNewsForm"); // Assuming form ID is "generateNewsForm"
+        if (form) {
+          form.submit(); // Submit the form
+        } else {
+          // Handle case where form element is not found
+        }
+      }
+    });
+
+    // Automatically read the news if available
+    window.onload = function() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = populateVoices; // Populate voices when they load
+      }
+
+      const news = document.getElementById("news");
+      if (news) {
+        readNews(news.textContent);
+      }
+    };
+
+window.onload = function() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = populateVoices; // Populate voices when they load
+
+    const news = document.getElementById("news");
+    if (news) {
+      readNews(news.textContent);
+    }
+
+    var count = 0;
+    if (count === 1) {
+      const promptUtterance = new SpeechSynthesisUtterance("Press the spacebar to generate today's news.");
+      window.speechSynthesis.speak(promptUtterance);
+      count = 2;
+    }
+    // Speak the prompt to press the spacebar
+    
+  }
+};
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        window.location.href = '/'; // This should match your Flask route for the homepage.
+    }
+});
+  </script>
+</head>
+<body>
+  <h1>Today's news:</h1>
+  <form id="generateNewsForm" action="/generate_news" method="POST"> <button type="submit">Get the news </button>
+  </form>
+
+  {% if news %}
+  <h2>Today's News:</h2>
+  <p id="news">{{ news }}</p>
+  {% endif %}
+</body>
+</html>

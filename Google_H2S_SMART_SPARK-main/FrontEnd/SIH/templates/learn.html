@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Input Example</title>
+    <style> 
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #336699; /* Dark blue background */
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #fff; /* White text */
+        }
+        
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            width: 80%;
+            text-align: center;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #display {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #ffcc00; /* Highlighted yellow text */
+        }
+    </style>
+    <script>
+        let recognition;
+        let isRecognizing = false;
+
+        // Function to start voice recognition
+        function startVoiceRecognition() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Your browser does not support voice recognition.");
+                return;
+            }
+
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = "en-IN";
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = function () {
+                isRecognizing = true;
+                console.log("Voice recognition started...");
+            };
+
+            recognition.onresult = function (event) {
+                const speechResult = event.results[0][0].transcript;
+                document.getElementById("text").value = speechResult;
+                console.log("Speech result:", speechResult);
+            };
+
+            recognition.onerror = function (event) {
+                alert("Voice recognition error: " + event.error);
+            };
+
+            recognition.onend = function () {
+                isRecognizing = false;
+                console.log("Voice recognition stopped.");
+            };
+
+            recognition.start();
+        }
+
+     
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "j" && !isRecognizing) {
+                startVoiceRecognition();
+            }
+        });
+
+        document.addEventListener("keyup", function (event) {
+            if (event.key === "j" && recognition) {
+                recognition.stop();
+            }
+        });
+
+       
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                window.location.href = '/'; // This should match your Flask route for the homepage.
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Speech to Braille</h1>
+    <h2>Press and hold 'J' to provide input</h2>
+    <form action="/send" method="post">
+    <input type="text" id="text" name="text" placeholder="Speak here..." required>
+  
+    <button type="submit">Send</button>
+    </form>
+    <div id="display"></div>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Mode</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3e0; /* Beige background */
+        }
+
+        .header {
+            background-color: #133e87; /* Dark blue strip */
+            color: #f3f3e0;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; /* Circular logo */
+        }
+
+        .header h1 {
+            font-size: 32px; /* Increased font size */ 
+            margin: 0 10px;
+            padding-left: 10px;
+            flex-grow: 1;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-top: 80px; /* Increased margin to move text down */
+        }
+
+        .welcome-section h2 {
+            font-size: 32px;
+            color: #133e87; /* Dark blue */
+        }
+
+        .file-upload {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .file-upload-container {
+            display: inline-block;
+            background-color: #608bc1; /* Medium blue */
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+        }
+
+        .file-upload input[type="file"] {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .file-upload button {
+            padding: 10px 20px;
+            background-color: #133e87; /* Dark blue */
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .file-upload button:hover {
+            background-color: #102d64; /* Darker blue hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="logo.jpg" alt="Logo">
+        <h1>Exam Mode</h1>
+    </div>
+
+    <div class="welcome-section">
+        <h2>Welcome to Exam Mode</h2>
+        <p>Please upload the question paper to proceed.</p>
+    </div>
+
+    <div class="file-upload">
+        <div class="file-upload-container">
+            <form id="uploadForm">
+                <input type="file" id="questionFile" accept=".txt" required><br>
+                <button type="button" id="uploadButton">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Function to read text aloud
+        function readAloud(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                window.speechSynthesis.speak(utterance);
+            } else {
+                console.error("Text-to-speech is not supported in this browser.");
+                alert(text); // Fallback if speech synthesis is unavailable
+            }
+        }
+
+        // Welcome message on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for speech synthesis support
+            if ('speechSynthesis' in window) {
+                // Prompt user interaction if autoplay is restricted
+                const userConsent = confirm("Would you like to hear a welcome message?");
+                if (userConsent) {
+                    readAloud("Welcome to Exam Mode. Please upload the question paper to proceed.");
+                }
+            } else {
+                console.error("Text-to-speech is not supported in this browser.");
+                alert("Welcome to Exam Mode. Please upload the question paper to proceed."); // Fallback
+            }
+        });
+
+        // Announce file selection
+        const fileInput = document.getElementById('questionFile');
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                readAloud(File selected: ${fileName});
+            }
+        });
+
+        // File upload function
+        function uploadFile() {
+            if (fileInput.files.length === 0) {
+                alert("Please select a file to upload.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function () {
+                localStorage.setItem('uploadedQuestions', reader.result);
+                window.location.href = 'examp2'; // Redirect to exam2.html
+            };
+            reader.readAsText(fileInput.files[0]);
+        }
+
+        // Trigger upload on 'J' key press
+        document.addEventListener('keydown', (event) => {
+            if (event.key.toLowerCase() === 'j') {
+                uploadFile();
+            }
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'e') {
+                window.location.href = '/'; // This should match your Flask route for the homepage.
+            }
+        });
+        // Attach upload button to function
+        document.getElementById('uploadButton').addEventListener('click', uploadFile);
+    </script>
+</body>
+</html>

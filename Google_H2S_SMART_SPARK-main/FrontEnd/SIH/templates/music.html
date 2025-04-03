@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3e0; /* Beige */
+            margin: 0;
+            padding: 0;
+            color: #133e87; /* Dark blue */
+        }
+
+        /* Header and Navigation Styling */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #003366; /* Dark Blue */
+            padding: 10px 20px;
+            color: white;
+            position: fixed; /* Fixed at the top */
+            width: 100%; /* Full width */
+            top: 0; /* Stick to the top */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            box-sizing: border-box; /* Ensure padding does not overflow */
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .logo .about-button {
+            background: #003366;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap; /* Prevent wrapping */
+        }
+
+        .logo .about-button:hover {
+            background: #002244; /* Slightly darker blue */
+        }
+
+        .top-nav {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap; /* Allows buttons to wrap if needed */
+        }
+
+        .nav-button {
+            background: #003366;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-button:focus, .nav-button:hover {
+            background: #002244; /* Slightly darker blue */
+        }
+
+        /* Player Section Styling */
+        .player {
+            background-color: #608bc1; /* Light blue */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            margin: 100px auto 0; /* Adjust margin to account for fixed header */
+        }
+
+        .player h1 {
+            font-size: 1.5rem;
+            color: #f3f3e0; /* Beige text */
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #cbdceb; /* Lighter blue */
+            color: #133e87; /* Dark text */
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #133e87; /* Dark blue */
+            color: #f3f3e0; /* Light text */
+        }
+
+        .status {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #f3f3e0; /* Beige */
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #cbdceb; /* Lighter blue */
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            color: #133e87; /* Dark blue */
+        }
+
+        th {
+            background-color: #cbdceb; /* Lighter blue */
+        }
+
+        td {
+            background-color: #f3f3e0; /* Beige */
+        }
+
+        td:hover {
+            background-color: #608bc1; /* Light blue */
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="logo">
+            <img src="static\Assets\Logo.png" alt="Logo" />
+            
+        </div>
+        <nav class="top-nav">
+            <button class="nav-button" data-action="about">About Us</button>
+            <button class="nav-button" data-action="help">Help Needed</button>
+            <button class="nav-button" data-action="sos">SOS Number</button>
+        </nav>
+    </header>
+
+    <!-- Music Player Section -->
+    <div class="player" role="region" aria-label="Music Player">
+        <h1>Music Player</h1>
+        <button id="inputButton">Input (J)</button>
+        <button id="prevButton">⏮</button>
+        <button id="playPause" aria-label="Play or Pause">Pause/Play</button>
+        <button id="nextButton">⏭</button>
+        <p class="status" id="status">Hey! Which song do I play?</p>
+        <table id="songList">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Song Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-title="Blue - Yung Kai" data-url="static/audio/Blue - Yung Kai.mp3">
+                    <td>1</td>
+                    <td>Blue - Yung Kai</td>
+                </tr>
+                <tr data-title="Song 2" data-url="static/audio/Pushpa Pushpa.mp3">
+                    <td>2</td>
+                    <td>Pushpa Pushpa</td>
+                </tr>
+                <tr data-title="Mayavi - Sanjith Hegde" data-url="static/audio/Mayavi - Sanjith Hegde.mp3">
+                    <td>3</td>
+                    <td>Mayavi - Sanjith Hegde</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+        <script>
+            const songs = [
+                { title: "Blue - Yung Kai", url: "static/audio/Blue - Yung Kai.mp3" },
+                { title: "Pushpa Pushpa", url: "static/audio/Pushpa Pushpa.mp3" },
+                { title: "Mayavi - Sanjith Hegde", url: "static/audio/Mayavi - Sanjith Hegde.mp3" },
+            ];
+            let currentSongIndex = 0;
+            let isPlaying = false;
+            let audio = new Audio();
+
+            const statusElement = document.getElementById('status');
+            const playPauseButton = document.getElementById('playPause');
+            const songList = document.getElementById('songList');
+
+            // Function to play the current song
+            function playSong(index) {
+                const song = songs[index];
+                if (!song) return;
+
+                audio.src = song.url;
+                audio.play();
+                isPlaying = true;
+                const message = `Now playing: ${song.title}`;
+                statusElement.textContent = message;
+                announce(message);
+
+                audio.onended = () => {
+                    isPlaying = false;
+                    const finishedMessage = "Playback finished.";
+                    statusElement.textContent = finishedMessage;
+                    announce(finishedMessage);
+                };
+            }
+
+            // Function to pause playback
+            function pauseSong() {
+                audio.pause();
+                isPlaying = false;
+                const pauseMessage = "Playback paused.";
+                statusElement.textContent = pauseMessage;
+                announce(pauseMessage);
+            }
+
+            // Function to announce messages using speech synthesis
+            function announce(message) {
+                const speech = new SpeechSynthesisUtterance(message);
+                window.speechSynthesis.speak(speech);
+            }
+
+            // Function to handle navigation
+            function navigateSongs(step) {
+                currentSongIndex = (currentSongIndex + step + songs.length) % songs.length;
+                playSong(currentSongIndex);
+            }
+
+            // Function to change volume
+            function changeVolume(amount) {
+                audio.volume = Math.min(Math.max(audio.volume + amount, 0), 1);
+                statusElement.textContent = volumeMessage;
+            
+            }
+
+            // Key press handlers
+            function handleKeyPress(event) {
+                switch (event.key) {
+                    case 'j': // Navigate to next song
+                        navigateSongs(1);
+                        break;
+                    case 'f': // Navigate to previous song
+                        navigateSongs(-1);
+                        break;
+                    case ' ': // Play or pause
+                        if (isPlaying) {
+                            pauseSong();
+                        } else {
+                            playSong(currentSongIndex);
+                        }
+                        break;
+                    case 'h': // Forward song
+                        audio.currentTime += 10;
+                        break;
+                    case 'g': // Rewind song
+                        audio.currentTime -= 10;
+                        break;
+                    case 'k': // Increase volume
+                        changeVolume(0.1);
+                        break;
+                    case 'd': // Decrease volume
+                        changeVolume(-0.1);
+                        break;
+                    case 's':
+                        const exitMessage = "Exited to home page.";
+                        statusElement.textContent = exitMessage;
+                        announce(exitMessage);
+                        navigateSongs("home.html");
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // Click handler for song cards
+            songList.addEventListener('click', (event) => {
+                const card = event.target.closest('tr');
+                if (card) {
+                    currentSongIndex = songs.findIndex(song => song.title === card.dataset.title);
+                    playSong(currentSongIndex);
+                }
+            });
+
+            // Event listeners
+            document.addEventListener('keydown', handleKeyPress);
+            playPauseButton.addEventListener('click', () => {
+                if (isPlaying) {
+                    pauseSong();
+                } else {
+                    playSong(currentSongIndex);
+                }
+            });
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    window.location.href = '/'; // This should match your Flask route for the homepage.
+                }
+            });
+
+        </script>
+    </body>
+    </html>

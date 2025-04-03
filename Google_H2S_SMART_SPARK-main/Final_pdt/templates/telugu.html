@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Input Example (Telugu)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #336699; /* Dark blue background */
+            color: white;
+            text-align: center;
+            padding: 20px;
+          }
+          
+          h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #fff; /* White text */
+          }
+          
+          input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+          }
+          
+          button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            margin: 5px;
+          }
+          
+          button:hover {
+            background-color: #0056b3;
+          }
+          </style>
+    <script>
+        let recognition;
+        let isRecognizing = false;
+
+        // Function to start voice recognition
+        function startVoiceRecognition() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("మీ బ్రౌజర్ వాయిస్ గుర్తింపు మద్దతు ఇవ్వదు.");
+                return;
+            }
+
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = "te-IN";  // Set the language to Telugu
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = function () {
+                isRecognizing = true;
+                console.log("వాయిస్ గుర్తింపు ప్రారంభించబడింది...");
+            };
+
+            recognition.onresult = function (event) {
+                const speechResult = event.results[0][0].transcript;
+                document.getElementById("user_input").value = speechResult;
+                console.log("వాయిస్ ఫలితం:", speechResult);
+            };
+
+            recognition.onerror = function (event) {
+                alert("వాయిస్ గుర్తింపు లోపం: " + event.error);
+            };
+
+            recognition.onend = function () {
+                isRecognizing = false;
+                console.log("వాయిస్ గుర్తింపు ఆగిపోయింది.");
+            };
+
+            recognition.start();
+        }
+
+        // Function to stop voice recognition and submit the form
+        function stopVoiceRecognition() {
+            if (isRecognizing && recognition) {
+                recognition.stop();
+                recognition.onend = function () {
+                    // Delay the form submission slightly to ensure text is captured
+                    setTimeout(() => {
+                        document.getElementById("voiceForm").submit();
+                    }, 500); // 500ms delay
+                };
+            }
+        }
+
+        // Function to read the response aloud in Telugu
+        function readResponse(responseText) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(responseText);
+                utterance.lang = "te-IN";  // Set the language to Telugu
+                utterance.rate = 0.6; // Adjust the speed if needed
+                utterance.pitch = 1.0; // Adjust the pitch if needed
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("మీ బ్రౌజర్ టెక్స్ట్ టు స్పీచ్ మద్దతు ఇవ్వదు.");
+            }
+        }
+
+        // Automatically read the response if available
+        window.onload = function () {
+            const responseElement = document.getElementById("response");
+            if (responseElement && responseElement.textContent.trim()) {
+                readResponse(responseElement.textContent);
+            }
+        };
+
+        // Event listeners for key press and release
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "j" && !isRecognizing) {
+                startVoiceRecognition();
+            }
+        });
+
+        document.addEventListener("keyup", function (event) {
+            if (event.key === "j") {
+                stopVoiceRecognition();
+            }
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                window.location.href = '/i'; // This should match your Flask route for the homepage.
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>చాట్‌బాట్</h1>
+    <h2>'J' కీని నొక్కి పట్టుకొని ఇన్పుట్ ఇవ్వండి</h2>
+    <form id="voiceForm" action="/telugu" method="POST">
+        <input type="text" id="user_input" name="user_input" placeholder="ఇక్కడ మాట్లాడండి..." required>
+    </form>
+
+    {% if response %}
+    <p id="response">{{ response }}</p>
+    {% endif %}
+</body>
+</html>

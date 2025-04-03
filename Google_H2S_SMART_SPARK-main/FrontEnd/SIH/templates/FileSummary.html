@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motivational Book Summaries</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #133e87;
+            color: #f3f3e0;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .story-container {
+            background-color: #f3f3e0;
+            border-radius: 20px;
+            width: 80%;
+            margin: 20px auto;
+            padding: 30px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            text-align: justify;
+            color: #333;
+        }
+
+        .story-container h1 {
+            font-size: 36px;
+            color: #133e87;
+        }
+
+        .story-container h2 {
+            font-size: 28px;
+            color: #133e87;
+            margin-top: 20px;
+        }
+
+        .story-container p {
+            font-size: 20px;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .story-container .quote {
+            font-size: 24px;
+            font-style: italic;
+            color: #608bc1;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Dynamic Book Containers -->
+
+    <div class="story-container">
+        <h1>Atomic Habits</h1>
+        <h2>Transforming Small Habits into Big Wins</h2>
+        <p>
+            "Atomic Habits" by James Clear is a practical guide to building good habits and breaking bad ones. Clear emphasizes the importance of focusing on small, consistent improvements that compound over time.<br> The book introduces the "Four Laws of Behavior Change" to create habits that stick, demonstrating how identity shapes actions and vice versa. The power of incremental change is key, with Clear showing how small, 1% improvements can lead to monumental success.
+<br>The book also addresses the role of environment and social circles in shaping habits. Clear offers actionable advice for building systems that make success inevitable, such as habit stacking, designing your environment for success, and tracking progress. "Atomic Habits" is not just about habits; it's about creating a mindset that fosters continuous improvement.
+
+
+        </p>
+        <div class="quote">"You do not rise to the level of your goals. You fall to the level of your systems."</div>
+    </div>
+
+    <div class="story-container">
+        <h1>Wings of Fire</h1>
+        <h2>The Journey of Dr. A.P.J. Abdul Kalam</h2>
+        <p>
+            "Wings of Fire" is the autobiography of Dr. A.P.J. Abdul Kalam, chronicling his journey from a small town in India to becoming the "Missile Man of India" and the country's President. The book inspires readers to dream big, work hard, and persevere against all odds. It provides insights into Kalam's contributions to India's space and defense programs and highlights the importance of humility and service<br>His leadership during India's nuclear tests in 1998 is a key highlight of the book.
+            Through the narrative of his humble beginnings, Kalam illustrates the importance of determination, focus, and the drive to achieve one's goals. <br>His emphasis on learning and the value of teamwork resonates deeply with readers. "Wings of Fire" is not just a story of scientific achievement; it is a story of visionary leadership, faith, and the unwavering belief in the potential of the nation and its youth.</p>
+        <div class="quote">"Dream, dream, dream. Dreams transform into thoughts and thoughts result in action."</div>
+    </div>
+
+    <div class="story-container">
+        <h1>My Experiments with Truth</h1>
+        <h2>The Autobiography of Mahatma Gandhi</h2>
+        <p>
+            "My Experiments with Truth" offers a deep and honest look into the life of Mahatma Gandhi. The book explores 
+            Gandhi's principles of nonviolence, truth, and simplicity, detailing his personal struggles and triumphs as 
+            he led India's fight for independence. It serves as a powerful reminder of the strength of moral conviction 
+            and the impact of leading by example.
+        </p>
+        <div class="quote">"Be the change that you wish to see in the world."</div>
+    </div>
+
+    <div class="story-container">
+        <h1>The Power of Now</h1>
+        <h2>A Guide to Spiritual Enlightenment by Eckhart Tolle</h2>
+        <p>
+            "The Power of Now" by Eckhart Tolle is a transformative book that delves into the concept of living in the 
+            present moment. Tolle explains how the mind often distracts us from the present, keeping us trapped in the past 
+            or anxious about the future. <br><br>
+            The book encourages readers to let go of their mental patterns and embrace the now, where true peace and 
+            enlightenment exist. Tolle guides readers toward recognizing their inner essence and breaking free from the 
+            constant chatter of the mind. It explores the ego and its destructive role in our lives, urging mindfulness 
+            in thoughts and emotions.
+        </p>
+        <div class="quote">"Realize deeply that the present moment is all you ever have. Make the Now the primary focus of your life."</div>
+    </div>
+    
+    <div class="story-container">
+        <h1>Start with Why</h1>
+        <h2>How Great Leaders Inspire Everyone to Take Action by Simon Sinek</h2>
+        <p>
+            "Start with Why" by Simon Sinek is a powerful exploration of the importance of understanding the "Why" behind 
+            everything we do, both personally and professionally. Sinek argues that great leaders and organizations succeed 
+            because they are driven by a clear sense of purpose. <br><br>
+            He introduces the "Golden Circle" framework, emphasizing the need to start with "Why," followed by "How," and 
+            then "What." This simple but profound concept reshapes the way we think about leadership and innovation. 
+            <br><br>
+            By highlighting examples like Martin Luther King Jr. and Apple, Sinek shows how those who inspire others 
+            clearly communicate their purpose and values.
+        </p>
+        <div class="quote">"People don't buy what you do; they buy why you do it."</div>
+    </div>
+    
+    <script>
+        const stories = Array.from(document.querySelectorAll('.story-container'));
+        let currentStoryIndex = 0;
+
+        // Shuffle the stories on load
+        function shuffleStories() {
+            for (let i = stories.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [stories[i], stories[j]] = [stories[j], stories[i]];
+            }
+
+            // Append shuffled stories back to the document
+            const body = document.body;
+            stories.forEach(story => body.appendChild(story));
+        }
+
+        // Stop the current speech
+        function stopSpeech() {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        // Scroll to the next or previous story
+        function scrollToStory(index) {
+            if (index >= 0 && index < stories.length) {
+                currentStoryIndex = index;
+                stories[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                stopSpeech(); // Stop previous speech
+                const title = stories[index].querySelector('h1').innerText;
+                const content = stories[index].querySelectorAll('p');
+                const quote = stories[index].querySelector('.quote')?.innerText;
+                let fullContent = `${title}. `;
+                content.forEach(paragraph => (fullContent += `${paragraph.innerText} `));
+                if (quote) {
+                    fullContent += `Quote: ${quote}`;
+                }
+                speakText(fullContent);
+            }
+        }
+
+        // Speak the story using SpeechSynthesis
+        function speakText(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9;
+            utterance.pitch = 1.1;
+            utterance.volume = 1;
+            utterance.lang = "en-IN";
+            window.speechSynthesis.speak(utterance);
+        }
+
+        var count = false;
+        // Handle key presses for navigation
+        document.addEventListener('keydown', (event) => {
+            if (event.key.toLowerCase() === 'j') {
+                if (currentStoryIndex < stories.length - 1) {
+                    scrollToStory(currentStoryIndex + 1);
+                }
+            } else if (event.key.toLowerCase() === 'f') {
+                if (currentStoryIndex > 0) {
+                    scrollToStory(currentStoryIndex - 1);
+                }
+            } else if (event.key.toLowerCase() === " ") {
+                if (window.speechSynthesis.speaking) {
+                    if (count === false) {
+                        window.speechSynthesis.pause();
+                        count = true;
+                    } else {
+                        window.speechSynthesis.resume();
+                        count = false;
+                    }
+                }
+            }
+        });
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            shuffleStories(); // Shuffle the stories on load
+            scrollToStory(currentStoryIndex); // Start with the first story
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                window.location.href = '/'; // This should match your Flask route for the homepage.
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Mode - Questions</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3e0; /* Beige background */
+        }
+
+        .header {
+            background-color: #133e87; /* Dark blue strip */
+            color: #f3f3e0;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; /* Circular logo */
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0 10px;
+            padding-left: 10px;
+            flex-grow: 1;
+        }
+
+        .question-container {
+            text-align: center;
+            margin: 50px auto;
+            padding: 20px;
+            width: 80%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .question-container h2 {
+            font-size: 28px;
+            color: #133e87; /* Dark blue */
+            margin-bottom: 20px;
+        }
+
+        .answer-box {
+            border: 2px dashed #608bc1; /* Medium blue */
+            padding: 20px;
+            min-height: 100px;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #333;
+            background-color: #cbdceb; /* Light blue */
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .navigation-buttons button {
+            padding: 10px 20px;
+            background-color: #608bc1; /* Medium blue */
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .navigation-buttons button:hover {
+            background-color: #133e87; /* Dark blue hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="logo.jpg" alt="Logo">
+        <h1>Exam Mode</h1>
+    </div>
+
+    <div class="question-container">
+        <h2 id="question"></h2>
+        <div class="answer-box" id="answerBox" contenteditable="true">Speak your answer here...</div>
+        <div class="navigation-buttons">
+            <button onclick="previousQuestion()">Previous</button>
+            <button onclick="nextQuestion()">Next</button>
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+        let currentQuestionIndex = 0;
+
+        // Function to read text aloud
+        function readAloud(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Load questions from local storage
+        function loadQuestions() {
+            const storedQuestions = localStorage.getItem('uploadedQuestions');
+            if (storedQuestions) {
+                questions = storedQuestions.split('\n').filter(line => line.trim() !== '');
+                displayQuestion();
+            } else {
+                alert("No questions found. Redirecting...");
+                window.location.href = 'index2.html';
+            }
+        }
+
+        // Display the current question
+        function displayQuestion() {
+            const questionElement = document.getElementById('question');
+            const answerBox = document.getElementById('answerBox');
+            questionElement.textContent = Question ${currentQuestionIndex + 1}: ${questions[currentQuestionIndex]};
+            answerBox.textContent = '';
+            readAloud(questionElement.textContent);
+        }
+
+        // Navigate to the next question
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                alert("You've reached the last question.");
+            }
+        }
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'e') {
+               window.speechSynthesis.cancel();
+                window.location.href = '/'; // This should match your Flask route for the homepage.
+            }
+        });
+
+        // Navigate to the previous question
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+            } else {
+                alert("You're already on the first question.");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadQuestions);
+    </script>
+</body>
+</html>

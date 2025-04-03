@@ -1,0 +1,1 @@
+To give input press and hold "j" to record and leave it to send the prompt

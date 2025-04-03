@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Navigation</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fdfde8;
+            color: #000;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #003366;
+            padding: 10px 20px;
+            color: white;
+        }
+        
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .top-nav {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-button {
+            background: #003366;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .nav-button:focus, .nav-button:hover {
+            background: #002244;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+        
+        .card {
+            background-color: #e6f2ff;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            text-align: center;
+            padding: 40px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .card img {
+            width: 105px;
+            height: 105px;
+            margin-bottom: 5px;
+        }
+        
+        .card:focus, .card:hover {
+            border: 2px solid #003366;
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-button {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            .card {
+                font-size: 12px;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                text-align: center;
+            }
+
+            .main-content {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            .card {
+                font-size: 10px;
+                padding: 10px;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="static/Assets/Logo.png" alt="Logo" />
+        </div>
+        <nav class="top-nav">
+            <button class="nav-button" data-action="help">Help Needed</button>
+            <button class="nav-button" data-action="sos">SOS Number</button>
+            <button class="nav-button" data-action="about">About Us</button>
+        </nav>
+    </header>
+    <main class="main-content">
+        <div class="card" tabindex="0" data-action="learning">
+            <img src="static/Assets/Learning-pana.png" alt="Learning Mode" />
+            <p>Learning Mode</p>
+        </div>
+        <div class="card" tabindex="0" data-action="reading">
+            <img src="static/Assets/Reading glasses-pana.png" alt="Reading Mode" />
+            <p>Reading Mode</p>
+        </div>
+        <div class="card" tabindex="0" data-action="quiz">
+            <img src="static/Assets/Online test-rafiki.png" alt="Quiz Mode" />
+            <p>Quiz Mode</p>
+        </div>
+        <div class="card" tabindex="0" data-action="motivation">
+            <img src="static/Assets/Elibrary.png" alt="motivation" />
+            <p>Motivation</p>
+        </div>
+        <div class="card" tabindex="0" data-action="chatbot">
+            <img src="static/Assets/Chat bot-pana.png" alt="Chat Bot" />
+            <p>Chat Bot</p>
+        </div>
+        <div class="card" tabindex="0" data-action="music">
+            <img src="static\Assets\Music-rafiki.png" alt="music" />
+            <p>Music</p>
+        </div>
+        <div class="card" tabindex="0" data-action="news">
+            <img src="static/Assets/Broadcast-rafiki.png" alt="News" />
+            <p>News</p>
+        </div>
+        <div class="card" tabindex="0" data-action="filesummary">
+            <img src="static/Assets/File.png" alt="filesummary" />
+            <p>Book Summarisation</p>
+        </div>
+    
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let preferredVoice;
+            function loadVoices() {
+                const voices = window.speechSynthesis.getVoices();
+                preferredVoice = voices.find(
+                    (voice) =>
+                        voice.name.includes("Google") ||
+                        voice.name.includes("Microsoft") ||
+                        voice.name.includes("Apple")
+                );
+            }
+    
+            if (
+                typeof speechSynthesis !== "undefined" &&
+                speechSynthesis.onvoiceschanged !== undefined
+            ) {
+                speechSynthesis.onvoiceschanged = loadVoices;
+            } else {
+                loadVoices();
+            }
+    
+            function speakText(text) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                if (preferredVoice) {
+                    utterance.voice = preferredVoice;
+                }
+                window.speechSynthesis.speak(utterance);
+            }
+    
+            function navigateTo(route) {
+                window.location.href = route;
+            }
+    
+            const cards = document.querySelectorAll(".card");
+            const topNavButtons = document.querySelectorAll(".nav-button");
+            let currentIndex = 0;
+            let isNavigatingCards = true;
+    
+            function highlightElement(elements, index) {
+                elements.forEach((el, i) => {
+                    if (i === index) {
+                        el.focus();
+                        const text = el.querySelector("p")?.textContent || el.textContent;
+                        if (text) {
+                            speakText(text);
+                        }
+                    }
+                });
+            }
+    
+            highlightElement(cards, currentIndex);
+    
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "j") {
+                    currentIndex = isNavigatingCards
+                        ? (currentIndex + 1) % cards.length
+                        : (currentIndex + 1) % topNavButtons.length;
+                    const elements = isNavigatingCards ? cards : topNavButtons;
+                    highlightElement(elements, currentIndex);
+                } else if (event.key === "f") {
+                    currentIndex = isNavigatingCards
+                        ? (currentIndex - 1 + cards.length) % cards.length
+                        : (currentIndex - 1 + topNavButtons.length) % topNavButtons.length;
+                    const elements = isNavigatingCards ? cards : topNavButtons;
+                    highlightElement(elements, currentIndex);
+                } else if (event.key === " ") {
+                    const elements = isNavigatingCards ? cards : topNavButtons;
+                    const activeElement = elements[currentIndex];
+                    const action = activeElement.getAttribute("data-action");
+                    if (action) {
+                        speakText(`${action} is selected`);
+                        switch (action) {
+                            case "learning":
+                                navigateTo("l");
+                                break;
+                            case "reading":
+                            navigateTo("s");
+                                break;
+                            case "quiz":
+                                navigateTo("q");
+                                break;
+                            case "chatbot":
+                                navigateTo("i");
+                                break;
+                            case "motivation":
+                                navigateTo("motivation");
+                                break;
+                            case "news":
+                                navigateTo("news");
+                                break;
+                            case "help":
+                                navigateTo("help");
+                                break;
+                            case "sos":
+                                navigateTo("sos");
+                                break;
+                            case "about":
+                                navigateTo("about");
+                                break;
+                            case "music":
+                                navigateTo("music");
+                                break;
+                            case "filesummary":
+                                navigateTo("filesummary");
+                                break;
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

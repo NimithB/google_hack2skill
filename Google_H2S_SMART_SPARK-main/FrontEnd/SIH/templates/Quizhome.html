@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Layout</title>
+    <style>
+        /* Color Palette */
+        :root {
+            --background-color: #f3f3e0;
+            --button-bg: #133e87;
+            --button-hover-bg: #608bc1;
+            --button-text-color: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --hover-shadow-color: rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s;
+            background-color: var(--background-color);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .middle-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        button {
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: var(--button-bg);
+            color: var(--button-text-color);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px var(--hover-shadow-color);
+            background-color: var(--button-hover-bg);
+        }
+
+        button:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px #cbdceb;
+        }
+    </style>
+</head>
+<body>
+    <div class="middle-buttons">
+        <button id="Geography-button" onclick="window.location.href = 'geo'">Geography</button>
+        <button id="GK-button" onclick="window.location.href = 'gk'">GK</button>
+        <button id="Math-button" onclick="window.location.href = 'math'">Mathematics</button>
+        <button id="Social-button" onclick="window.location.href = 'social'">Social</button>
+    </div>
+
+    <script>
+        let currentIndex = 0; // Track the currently focused button
+        const buttons = document.querySelectorAll("button");
+
+        function navigateToPage(page) {
+            window.location.href = page; // Navigate to the specific page
+        }
+
+        function highlightButton(index) {
+            buttons.forEach((button, i) => {
+                if (i === index) {
+                    button.focus();
+                    speakText(button.textContent); // Speak the button text
+                }
+            });
+        }
+
+        // Add keyboard navigation for 'f', 'j', 'Enter', and 'Space'
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "j") {
+                // Navigate forward
+                currentIndex = (currentIndex + 1) % buttons.length;
+                highlightButton(currentIndex);
+            } else if (event.key === "f") {
+                // Navigate backward
+                currentIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+                highlightButton(currentIndex);
+            } else if (event.key === "Enter" || event.key === " ") {
+                // Activate the currently focused button on 'Enter' or 'Space'
+                event.preventDefault(); // Prevent default spacebar scrolling behavior
+                buttons[currentIndex].click();
+            }
+        });
+
+        // Speech synthesis setup
+        let preferredVoice;
+        function loadVoices() {
+            const voices = window.speechSynthesis.getVoices();
+            preferredVoice = voices.find(
+                (voice) =>
+                    voice.name.includes("Google") ||
+                    voice.name.includes("Microsoft") ||
+                    voice.name.includes("Apple")
+            );
+        }
+
+        if (
+            typeof speechSynthesis !== "undefined" &&
+            speechSynthesis.onvoiceschanged !== undefined
+        ) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        } else {
+            loadVoices();
+        }
+
+        function speakText(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+            }
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Initial focus on the first button
+        highlightButton(currentIndex);
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                window.location.href = '/'; // This should match your Flask route for the homepage.
+            }
+        });
+    </script>
+</body>
+</html>
